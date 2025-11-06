@@ -11,8 +11,10 @@ import { OrdenTrabajoModule } from './orden-trabajo/orden-trabajo.module';
 import { ItemTrabajoModule } from './item-trabajo/item-trabajo.module';
 import { ListaRepuestosModule } from './lista-repuestos/lista-repuestos.module';
 import { ItemRepuestosModule } from './item-repuestos/item-repuestos.module';
-console.log('NODE_ENV=', process.env.NODE_ENV);
-console.log('DATABASE_URL has ssl=', process.env.DATABASE_URL?.includes('ssl='));
+console.warn('[DB MODE]',
+  process.env.DATABASE_URL ? 'URL' : 'FIELDS',
+  { HAS_URL: !!process.env.DATABASE_URL, DB_HOST: process.env.DB_HOST }
+);
 @Module({
   imports: [
     ConfigModule.forRoot({
