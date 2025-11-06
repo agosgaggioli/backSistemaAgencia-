@@ -1,21 +1,35 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const config_1 = require("@nestjs/config");
-const dotenv_1 = require("dotenv");
-(0, dotenv_1.config)({ path: ".env.development" });
-console.log(process.env.DB_PASSWORD);
-const config = {
-    type: "postgres",
-    database: process.env.DB_NAME,
-    host: process.env.DB_HOST,
-    port: parseInt(process.env.DB_PORT ?? "5432", 10),
-    username: process.env.DB_USERNAME,
-    password: process.env.DB_PASSWORD,
-    dropSchema: true,
-    synchronize: true,
-    logging: true,
-    entities: ["dist/**/*.entity{.ts,.js}"],
-    migrations: ["dist/migrations/*{.ts,.js}"]
-};
-exports.default = (0, config_1.registerAs)("typeorm", () => config);
+exports.default = (0, config_1.registerAs)('typeorm', () => {
+    const logging = (process.env.DB_LOGGING ?? 'false').toLowerCase() === 'true';
+    const synchronize = (process.env.DB_SYNCHRONIZE ?? 'false').toLowerCase() === 'true';
+    const url = process.env.DATABASE_URL;
+    if (url) {
+        return {
+            type: 'postgres',
+            url,
+            entities: ['dist/**/*.entity{.ts,.js}'],
+            migrations: ['dist/migrations/*{.ts,.js}'],
+            synchronize,
+            logging,
+            ssl: { rejectUnauthorized: false },
+            extra: { ssl: { rejectUnauthorized: false } },
+        };
+    }
+    return {
+        type: 'postgres',
+        host: process.env.DB_HOST,
+        port: parseInt(process.env.DB_PORT ?? '5432', 10),
+        database: process.env.DB_NAME,
+        username: process.env.DB_USERNAME,
+        password: process.env.DB_PASSWORD,
+        entities: ['dist/**/*.entity{.ts,.js}'],
+        migrations: ['dist/migrations/*{.ts,.js}'],
+        synchronize,
+        logging,
+        ssl: { rejectUnauthorized: false },
+        extra: { ssl: { rejectUnauthorized: false } },
+    };
+});
 //# sourceMappingURL=typeorm.js.map

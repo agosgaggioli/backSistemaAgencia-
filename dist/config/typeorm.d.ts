@@ -1,26 +1,82 @@
 declare const _default: (() => {
-    type: string;
-    database: string;
-    host: string;
-    port: number;
-    username: string | undefined;
-    password: string | undefined;
-    dropSchema: boolean;
-    synchronize: boolean;
-    logging: boolean;
+    type: "postgres";
+    url: string;
     entities: string[];
     migrations: string[];
+    synchronize: boolean;
+    logging: boolean;
+    ssl: {
+        rejectUnauthorized: boolean;
+    };
+    extra: {
+        ssl: {
+            rejectUnauthorized: boolean;
+        };
+    };
+    host?: undefined;
+    port?: undefined;
+    database?: undefined;
+    username?: undefined;
+    password?: undefined;
+} | {
+    type: "postgres";
+    host: string;
+    port: number;
+    database: string;
+    username: string;
+    password: string;
+    entities: string[];
+    migrations: string[];
+    synchronize: boolean;
+    logging: boolean;
+    ssl: {
+        rejectUnauthorized: boolean;
+    };
+    extra: {
+        ssl: {
+            rejectUnauthorized: boolean;
+        };
+    };
+    url?: undefined;
 }) & import("@nestjs/config").ConfigFactoryKeyHost<{
-    type: string;
-    database: string;
-    host: string;
-    port: number;
-    username: string | undefined;
-    password: string | undefined;
-    dropSchema: boolean;
-    synchronize: boolean;
-    logging: boolean;
+    type: "postgres";
+    url: string;
     entities: string[];
     migrations: string[];
+    synchronize: boolean;
+    logging: boolean;
+    ssl: {
+        rejectUnauthorized: boolean;
+    };
+    extra: {
+        ssl: {
+            rejectUnauthorized: boolean;
+        };
+    };
+    host?: undefined;
+    port?: undefined;
+    database?: undefined;
+    username?: undefined;
+    password?: undefined;
+} | {
+    type: "postgres";
+    host: string;
+    port: number;
+    database: string;
+    username: string;
+    password: string;
+    entities: string[];
+    migrations: string[];
+    synchronize: boolean;
+    logging: boolean;
+    ssl: {
+        rejectUnauthorized: boolean;
+    };
+    extra: {
+        ssl: {
+            rejectUnauthorized: boolean;
+        };
+    };
+    url?: undefined;
 }>;
 export default _default;
