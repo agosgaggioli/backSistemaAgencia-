@@ -16,14 +16,13 @@ import { ItemRepuestosModule } from './item-repuestos/item-repuestos.module';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath:
-        process.env.NODE_ENV === 'development' ? '.env.development' : undefined,
+      envFilePath: process.env.NODE_ENV === 'development' ? '.env.development' : undefined,
+      ignoreEnvFile: process.env.NODE_ENV === 'production', // ⬅️ clave
       load: [typeOrmConfig],
     }),
-
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
-      useFactory: (config: ConfigService) => config.get('typeorm')!, // devuelve el objeto completo
+      useFactory: (config: ConfigService) => config.get('typeorm')!,
     }),
 
     VehiculoModule,
