@@ -21,6 +21,7 @@ async function bootstrap() {
     optionsSuccessStatus: 204,
   });
 
-  await app.listen(parseInt(process.env.PORT ?? '3009', 10));
+  await app.listen(parseInt(process.env.PORT ?? '3009', 10), '0.0.0.0');
+
 }
 bootstrap();

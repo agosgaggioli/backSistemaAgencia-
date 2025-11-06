@@ -1,5 +1,8 @@
 node_modules
-dist
-*.tsbuildinfo
+npm-debug.log
+Dockerfile*
+docker-compose*
 .git
+.gitignore
 .env*
+tmp
