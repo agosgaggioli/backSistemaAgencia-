@@ -18,11 +18,10 @@ import { ItemRepuestosModule } from './item-repuestos/item-repuestos.module';
     }
     ),
     TypeOrmModule.forRootAsync({
-      inject:[ConfigService],
-      useFactory: (Config: ConfigService) => 
-        Config.get('typeorm')!, 
-
-    }),
+  inject: [ConfigService],
+  useFactory: (config: ConfigService) => 
+    config.get('typeorm') || {},   // usa el objeto completo de typeorm
+}),
     VehiculoModule,
     PeritajeModule,
     ItemOrdenModule,
