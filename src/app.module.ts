@@ -12,11 +12,13 @@ import { ItemRepuestosModule } from './item-repuestos/item-repuestos.module';
 
 @Module({
   imports: [
-      ConfigModule.forRoot({
-      isGlobal: true,
-      load:[typeOrmConfig],
-    }
-    ),
+// app.module.ts
+ConfigModule.forRoot({
+  isGlobal: true,
+  envFilePath: process.env.NODE_ENV === 'development' ? '.env.development' : undefined,
+  load: [typeOrmConfig],
+}),
+
     TypeOrmModule.forRootAsync({
   inject: [ConfigService],
   useFactory: (config: ConfigService) => 
