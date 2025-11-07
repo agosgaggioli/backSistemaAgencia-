@@ -28,8 +28,11 @@ FechaModificacion: Date;
   @OneToMany(() => ItemOrden, (item) => item.hojaTrabajo)
   itemsOrden: ItemOrden[]
 
-  @OneToOne(() => Vehiculo)
-  @JoinColumn({ name: "Vehiculo" })
+@OneToOne(() => Vehiculo)
+@JoinColumn({
+  name: 'Vehiculo',                   // FK en "Peritajes"
+  referencedColumnName: 'Id_Vehiculo' // PK real en "Vehiculos"
+})
   Vehiculo: Vehiculo
 
 

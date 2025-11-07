@@ -95,10 +95,12 @@ export class Vehiculo {
 
     @Column({ default: "SALON" })
     UBICACION: string
-
-    @OneToOne(() => Usado)
-    @JoinColumn({ name: "TipoVehiculo" })
-    TipoVehiculo: Usado;
+@OneToOne(() => Usado)
+@JoinColumn({
+  name: 'TipoVehiculo',              // FK en "Vehiculos"
+  referencedColumnName: 'Id_Vehiculo'// PK real en "VehiculoUsado"
+})
+TipoVehiculo: Usado;
     @OneToMany(() => OrdenTrabajo, o => o.Vehiculo)
 ordenes: OrdenTrabajo[];
 
