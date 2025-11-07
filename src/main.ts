@@ -1,5 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { DataSource } from 'typeorm';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -20,6 +21,13 @@ async function bootstrap() {
     credentials: true,
     optionsSuccessStatus: 204,
   });
+
+  if ((process.env.RUN_MIGRATIONS ?? 'false').toLowerCase() === 'true') {
+    const ds = app.get(DataSource);
+    console.log('[MIGRATIONS] Ejecutando migraciones pendientes…');
+    await ds.runMigrations();
+    console.log('[MIGRATIONS] OK');
+  }
 
   await app.listen(parseInt(process.env.PORT ?? '3009', 10), '0.0.0.0');
 

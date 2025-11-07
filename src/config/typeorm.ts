@@ -1,5 +1,4 @@
-// src/config/typeorm.ts
-// src/config/typeorm.ts
+
 import { registerAs } from '@nestjs/config';
 
 export default registerAs('typeorm', () => {
@@ -21,14 +20,14 @@ export default registerAs('typeorm', () => {
     return {
       type: 'postgres' as const,
       url,
-      // ⚠️ Para URL, duplicar en ssl y extra.ssl
+     
       ssl: true,
       extra: { ssl: { rejectUnauthorized: false } },
       ...common,
     };
   }
 
-  // Fallback por campos individuales (dev/local)
+
   return {
     type: 'postgres' as const,
     host: process.env.DB_HOST!,
