@@ -21,6 +21,11 @@ export class InitPeritajeOrdenesItems1720371000001 implements MigrationInterface
       );
     `);
 
+ 
+    await queryRunner.query(`
+      CREATE UNIQUE INDEX "UQ_Peritajes_Vehiculo" ON "Peritajes" ("Vehiculo");
+    `);
+
     // === Tabla OrdenesTrabajo ===
     await queryRunner.query(`
       CREATE TABLE "OrdenesTrabajo" (
@@ -66,21 +71,31 @@ export class InitPeritajeOrdenesItems1720371000001 implements MigrationInterface
       );
     `);
 
-    // === Índices ===
-    await queryRunner.query(`CREATE INDEX "IDX_Peritajes_Estado" ON "Peritajes" ("estado");`);
-    await queryRunner.query(`CREATE INDEX "IDX_OrdenesTrabajo_Estado" ON "OrdenesTrabajo" ("estado");`);
+    // === Índices complementarios ===
+    await queryRunner.query(`
+      CREATE INDEX "IDX_Peritajes_Estado" ON "Peritajes" ("estado");
+    `);
+    await queryRunner.query(`
+      CREATE INDEX "IDX_OrdenesTrabajo_Estado" ON "OrdenesTrabajo" ("estado");
+    `);
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
+    // Bajar índices (en orden inverso)
     await queryRunner.query(`DROP INDEX IF EXISTS "IDX_OrdenesTrabajo_Estado";`);
     await queryRunner.query(`DROP INDEX IF EXISTS "IDX_Peritajes_Estado";`);
+    await queryRunner.query(`DROP INDEX IF EXISTS "UQ_Peritajes_Vehiculo";`);
+
+    // Bajar FKs e tablas (en orden inverso a la creación)
     await queryRunner.query(`ALTER TABLE "ItemOrden" DROP CONSTRAINT IF EXISTS "FK_ItemOrden_OrdenTrabajo";`);
     await queryRunner.query(`ALTER TABLE "ItemOrden" DROP CONSTRAINT IF EXISTS "FK_ItemOrden_Peritaje";`);
+    await queryRunner.query(`DROP TABLE IF EXISTS "ItemOrden";`);
+
     await queryRunner.query(`ALTER TABLE "OrdenesTrabajo" DROP CONSTRAINT IF EXISTS "FK_OrdenesTrabajo_Peritaje";`);
     await queryRunner.query(`ALTER TABLE "OrdenesTrabajo" DROP CONSTRAINT IF EXISTS "FK_OrdenesTrabajo_Vehiculo";`);
-    await queryRunner.query(`ALTER TABLE "Peritajes" DROP CONSTRAINT IF EXISTS "FK_Peritajes_Vehiculo";`);
-    await queryRunner.query(`DROP TABLE IF EXISTS "ItemOrden";`);
     await queryRunner.query(`DROP TABLE IF EXISTS "OrdenesTrabajo";`);
+
+    await queryRunner.query(`ALTER TABLE "Peritajes" DROP CONSTRAINT IF EXISTS "FK_Peritajes_Vehiculo";`);
     await queryRunner.query(`DROP TABLE IF EXISTS "Peritajes";`);
   }
 }
