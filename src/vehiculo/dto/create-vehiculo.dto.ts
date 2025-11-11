@@ -92,5 +92,5 @@ export class VehiculoUsadoDto {
 
     @IsNumber()
     @IsNotEmpty()
-    año: number
+    anio: number
 }

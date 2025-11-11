@@ -21,8 +21,7 @@ export class Usado {
   @Column({ length: 255 })
   Observaciones: string;
 
-  // 👇 Mejor evitar usar una propiedad con tilde.
-  //    Mapeá el nombre de columna "año" a una propiedad TS sin tilde:
+
   @Column({ name: 'año', type: 'int' })
   anio: number;
 }
