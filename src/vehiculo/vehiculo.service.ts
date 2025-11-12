@@ -108,19 +108,28 @@ export class VehiculoService {
     return vehiculoDelete
   }
 
-async search({ Id_Vehiculo, marca, dominio }: { Id_Vehiculo?: string; marca?: string; dominio?: string }) {
+async search({
+  Id_Vehiculo,
+  marca,
+  dominio,
+}: {
+  Id_Vehiculo?: string;
+  marca?: string;
+  dominio?: string;
+}) {
   // Caso A: solo Id_Vehiculo numérico → igualdad exacta (rápido)
   if (Id_Vehiculo && /^\d+$/.test(Id_Vehiculo) && !marca && !dominio) {
     return this.repositorioVehiculo.find({
       where: { Id_Vehiculo: parseInt(Id_Vehiculo, 10) },
       order: { Id_Vehiculo: 'ASC' },
-      relations: ['TipoVehiculo'], // opcional si querés traer el usado
+      relations: ['TipoVehiculo'], // ✅ acá ya venía bien
     });
   }
 
   const qb = this.repositorioVehiculo
     .createQueryBuilder('v')
-    .leftJoin('v.TipoVehiculo', 'u'); // <- Dominio vive acá
+    // ✅ IMPORTANTE: AND SELECT para que venga en el JSON
+    .leftJoinAndSelect('v.TipoVehiculo', 'u');
 
   if (Id_Vehiculo) {
     qb.andWhere(`CAST(v."Id_Vehiculo" AS TEXT) ILIKE :id`, {
@@ -129,7 +138,9 @@ async search({ Id_Vehiculo, marca, dominio }: { Id_Vehiculo?: string; marca?: st
   }
 
   if (marca) {
-    qb.andWhere(`v."Marca" ILIKE :marca`, { marca: `%${escILike(marca)}%` });
+    qb.andWhere(`v."Marca" ILIKE :marca`, {
+      marca: `%${escILike(marca)}%`,
+    });
   }
 
   if (dominio) {
@@ -139,8 +150,10 @@ async search({ Id_Vehiculo, marca, dominio }: { Id_Vehiculo?: string; marca?: st
   }
 
   qb.orderBy(`v."Id_Vehiculo"`, 'ASC');
+
   return qb.getMany();
 }
+
 
 async countVehiculos (){
   const vehiculos : number = await this.repositorioVehiculo.count()
