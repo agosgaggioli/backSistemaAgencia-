@@ -20,26 +20,38 @@ export class PeritajeService {
   ) { }
 
   async create(createPeritajeDto: CreatePeritajeDto) {
-    const vehiculo: Vehiculo | null = await this.repositorioVehiculo.findOne({ where: { Id_Vehiculo: createPeritajeDto.Id_Vehiculo } })
-    if (!vehiculo) throw new NotFoundException("vehiculo inexistente")
-    vehiculo.Peritada = "SI"
-    await this.repositorioVehiculo.save(vehiculo)
+  const vehiculo = await this.repositorioVehiculo.findOne({
+    where: { Id_Vehiculo: createPeritajeDto.Id_Vehiculo },
+  });
+  if (!vehiculo) throw new NotFoundException('vehiculo inexistente');
 
-    const { itemsPeritaje, ...peritajeData } = createPeritajeDto;
-    const hoja = this.repositorioPeritaje.create({ ...peritajeData })
+  vehiculo.Peritada = 'SI';
+  await this.repositorioVehiculo.save(vehiculo);
 
-    const hojaa = await this.repositorioPeritaje.save(hoja)
+  const { itemsPeritaje, ...peritajeData } = createPeritajeDto;
 
-    const Items: ItemOrden[] = await this.serviceItems.create(itemsPeritaje, hojaa)
-    hojaa.itemsOrden = Items
-    hojaa.Vehiculo = vehiculo
-   hojaa.FechaModificacion = new Date();
+  // 👉 acá ya creás la hoja con el Vehiculo seteado
+  const hoja = this.repositorioPeritaje.create({
+    ...peritajeData,
+    Vehiculo: vehiculo,
+    FechaModificacion: new Date(),
+  });
 
-    const hojasNew = await this.repositorioPeritaje.save(hojaa)
-    return this.repositorioPeritaje.findOne({
-      where: { Id: hojasNew.Id },
-      relations: { itemsOrden: true, Vehiculo: true },
-    });
+  const hojaGuardada = await this.repositorioPeritaje.save(hoja);
+
+  const Items: ItemOrden[] = await this.serviceItems.create(
+    itemsPeritaje,
+    hojaGuardada,
+  );
+  hojaGuardada.itemsOrden = Items;
+
+  const hojasNew = await this.repositorioPeritaje.save(hojaGuardada);
+
+  return this.repositorioPeritaje.findOne({
+    where: { Id: hojasNew.Id },
+    relations: { itemsOrden: true, Vehiculo: true },
+  });
+
   }
 
   async findAll() {
